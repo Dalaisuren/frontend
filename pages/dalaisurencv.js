@@ -16,19 +16,12 @@ export default function CV() {
           </div>
           <div>
             <p className="font-semibold text-gray-700">Phone</p>
-            <p>(+976) 69696969</p>
+            <p>(+976) 94407140</p>
           </div>
           <div>
             <p className="font-semibold text-gray-700">Email</p>
-            <p>dalaisuren@email.com</p>
+            <p>dalaisurene@email.com</p>
           </div>
-        </div>
-  
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Summary</h2>
-          <p className="text-gray-700">
-            Dalaisuren is a good studenttt i love me myself
-          </p>
         </div>
   
         <div className="mb-8">
@@ -60,7 +53,7 @@ export default function CV() {
           
           <div className="mb-4">
             <h3 className="text-xl font-bold text-gray-900">Bachelor of Science in Computer Science</h3>
-            <p className="text-gray-600">University of New York, 2017</p>
+            <p className="text-gray-600">University of Mongolia, 2017</p>
           </div>
         </div>
   
