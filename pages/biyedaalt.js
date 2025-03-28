@@ -12,15 +12,14 @@ const data = [
   { id: 9, name: 'Ochir-Erdene', description: 'Data science explorer.', age: 16 },
   { id: 10, name: 'Emily', description: 'Digital marketing guru.', age: 16 },
   { id: 11, name: 'Tergel', description: 'Mobile app developer.', age: 16 },
-  { id: 12, name: 'Dalaisuren', description: 'DevOps engineer and optimist.', age: 15},
+  { id: 12, name: 'Dalaisuren', description: 'Devolops engineer and optimist.', age: 15},
   { id: 13, name: 'Enkh-Uchral', description: 'Web design aficionado.', age: 16 },
   { id: 14, name: 'Tugs-Asralt', description: 'Loves data analytics.', age: 16 },
   { id: 15, name: 'Enkhjav', description: 'Cloud computing architect.', age: 16 },
   { id: 16, name: 'Amartuvshin', description: 'Designing amazing products.', age: 16 },
   { id: 17, name: 'Hanbileg', description: 'SEO strategy specialist.', age: 16 },
-  { id: 18, name: 'Anar-Erdene', description: 'JavaScript enthusiast.', age: 16 },
-  { id: 19, name: 'Choi-Odser', description: 'Software solutions expert.', age: 16 },
-  { id: 20, name: 'Tselmeg', description: 'Business analysis professional.', age: 16 },
+  { id: 18, name: 'Choi-Odser', description: 'Software solutions expert.', age: 16 },
+  { id: 19, name: 'Tselmeg', description: 'Business analysis professional.', age: 16 },
 ];
 
 export default function Home() {
