@@ -12,191 +12,119 @@ export default function MongolAPI() {
   const [searchTerm, setSearchTerm] = useState('');
   const [view, setView] = useState('grid');
   const router = useRouter();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const clothesResponse = await fetch('https://mongol-api-rest.vercel.app/clothes');
-        const clothesResult = await clothesResponse.json();
+        const responses = await Promise.all([
+          fetch('https://mongol-api-rest.vercel.app/clothes'),
+          fetch('https://mongol-api-rest.vercel.app/instruments'),
+          fetch('https://mongol-api-rest.vercel.app/Historicaltools'),
+          fetch('https://mongol-api-rest.vercel.app/EthnicGroups'),
+          fetch('https://mongol-api-rest.vercel.app/provinces'),
+          fetch('https://mongol-api-rest.vercel.app/HistoricalFigures'),
+          fetch('https://mongol-api-rest.vercel.app/TouristAttractions'),
+        ]);
+
+        const [
+          clothesResult,
+          instrumentsResult,
+          toolsResult,
+          ethnicGroupsResult,
+          provincesResult,
+          historicalFiguresResult,
+          touristAttractionsResult,
+        ] = await Promise.all(responses.map((res) => res.json()));
+
         setClothesData(clothesResult.clothes || []);
-
-        const instrumentsResponse = await fetch('https://mongol-api-rest.vercel.app/instruments');
-        const instrumentsResult = await instrumentsResponse.json();
         setInstrumentsData(instrumentsResult.instruments || []);
-        
-        const toolsResponse = await fetch('https://mongol-api-rest.vercel.app/Historicaltools');
-        const toolsResult = await toolsResponse.json();
         setToolsData(toolsResult.tools || []);
-
-        const ethnicGroupsResponse = await fetch('https://mongol-api-rest.vercel.app/EthnicGroups');
-        const ethnicGroupsResult = await ethnicGroupsResponse.json();
         setEthnicGroupsData(ethnicGroupsResult.ethnic_groups || []);
-
-        const provincesResponse = await fetch('https://mongol-api-rest.vercel.app/provinces');
-        const provincesResult = await provincesResponse.json();
         setProvincesData(provincesResult.provinces || []);
-
-        const historicalFiguresResponse = await fetch('https://mongol-api-rest.vercel.app/HistoricalFigures');
-        const historicalFiguresResult = await historicalFiguresResponse.json();
         setHistoricalFiguresData(historicalFiguresResult.historical_figures || []);
-
-        const touristAttractionsResponse = await fetch('https://mongol-api-rest.vercel.app/TouristAttractions');
-        const touristAttractionsResult = await touristAttractionsResponse.json();
         setTouristAttractionsData(touristAttractionsResult.tourist_attractions || []);
+
+        console.log("Instruments Data:", instrumentsData); // Added this line!
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
     fetchData();
   }, []);
 
-  const filteredClothesData = clothesData.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  const filteredInstrumentsData = instrumentsData.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  const filteredToolsData = toolsData.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  const filteredEthnicGroupsData = ethnicGroupsData.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  const filteredProvincesData = provincesData.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  const filteredHistoricalFiguresData = historicalFiguresData.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  const filteredTouristAttractionsData = touristAttractionsData.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filterData = (data) =>
+    data.filter((item) => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
-    <div className="flex flex-col items-center p-8 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-8 text-gray-800">Mongol API</h1>
+    <div className="min-h-screen bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% p-8">
+      <h1 className="text-4xl font-extrabold text-center mb-8 animate-pulse">
+        Explore Mongolian Culture
+      </h1>
 
-      <div className="flex justify-between items-center w-full max-w-6xl mb-6">
+      <div className="flex justify-between items-center w-full max-w-6xl mx-auto mb-6">
         <input
           type="text"
-          placeholder="Search"
-          className="p-2 w-1/2 rounded-lg border-2 border-gray-300"
+          placeholder="Search..."
+          className="p-3 w-1/2 rounded-full bg-gray-800 border-2 border-gray-700 focus:outline-none focus:border-blue-500 text-white"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <div className="flex space-x-4">
-          <button
-            onClick={() => setView(view === 'grid' ? 'list' : 'grid')}
-            className="mb-6 p-2 bg-blue-500 text-white rounded-md"
+        <button
+          onClick={() => setView(view === 'grid' ? 'list' : 'grid')}
+          className="px-6 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 transition-colors duration-300"
+        >
+          {view === 'grid' ? 'List View' : 'Grid View'}
+        </button>
+      </div>
+
+      {[
+        { title: 'Clothes', data: filterData(clothesData) },
+        { title: 'Instruments', data: filterData(instrumentsData) },
+        { title: 'Historical Tools', data: filterData(toolsData) },
+        { title: 'Ethnic Groups', data: filterData(ethnicGroupsData) },
+        { title: 'Provinces', data: filterData(provincesData) },
+        { title: 'Historical Figures', data: filterData(historicalFiguresData) },
+        { title: 'Tourist Attractions', data: filterData(touristAttractionsData) },
+      ].map(({ title, data }) => (
+        <div key={title} className="w-full max-w-6xl mx-auto mb-8">
+          <h2 className="text-3xl font-semibold mb-4 text-gray-200">{title}</h2>
+          <div
+            className={`grid ${
+              view === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6' : 'space-y-6'
+            }`}
           >
-            Toggle View
-          </button>
+            {data.length > 0 ? (
+              data.map((item) => (
+                <div
+                  key={item.id}
+                  className={`bg-gray-900 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer ${
+                    view === 'grid' ? '' : 'flex items-center'
+                  }`}
+                  onClick={() => router.push(`/mongolapi/${item.id}`)}
+                >
+                  {item.images && (
+                    <img
+                      src={item.images}
+                      alt={item.name}
+                      className={`rounded-xl object-cover mb-4 ${
+                        view === 'grid' ? 'w-full h-48' : 'w-32 h-32 mr-4'
+                      }`}
+                    />
+                  )}
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">{item.name}</h3>
+                    <p className="text-gray-400">{item.description}</p>
+                  </div>
+                  {}
+                  {title === 'Instruments' && console.log("Item ID:", item.id)}
+                </div>
+              ))
+            ) : (
+              <p className="text-center text-gray-500">No data found.</p>
+            )}
+          </div>
         </div>
-      </div>
-
-      <div className="w-full max-w-6xl mb-8">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Clothes</h2>
-        <div className={`w-full ${view === 'grid' ? 'grid grid-cols-4 gap-8' : 'space-y-8'}`}>
-          {filteredClothesData.map((item, index) => (
-            <div key={index} className={`${
-              view === 'grid' ? 'bg-white p-6 rounded-lg border border-black shadow-lg' : 'bg-white p-6 rounded-lg border border-gray-300 shadow-md w-full'
-            } text-center`} onClick={()=>router.push(`/mongolapi/${item.id}`)}>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">{item.name}</h3>
-              <p className="text-base text-gray-600 mb-2">{item.description}</p>
-              {item.images && <img src={item.images} alt={item.name} className="w-full h-[200px] object-cover mb-4 rounded-md" />}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="w-full max-w-6xl mb-8">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Instruments</h2>
-        <div className={`w-full ${view === 'grid' ? 'grid grid-cols-4 gap-8' : 'space-y-8'}`}>
-          {filteredInstrumentsData.map((item, index) => (
-            <div key={index} className={`${
-              view === 'grid' ? 'bg-white p-6 rounded-lg border border-black shadow-lg' : 'bg-white p-6 rounded-lg border border-gray-300 shadow-md w-full'
-            } text-center`}>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">{item.name}</h3>
-              <p className="text-base text-gray-600 mb-2">{item.description}</p>
-              {item.images && <img src={item.images} alt={item.name} className="w-full h-[200px] object-cover mb-4 rounded-md" />}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="w-full max-w-6xl mb-8">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Historical Tools</h2>
-        <div className={`w-full ${view === 'grid' ? 'grid grid-cols-4 gap-8' : 'space-y-8'}`}>
-          {filteredToolsData.map((item, index) => (
-            <div key={index} className={`${
-              view === 'grid' ? 'bg-white p-6 rounded-lg border border-black shadow-lg' : 'bg-white p-6 rounded-lg border border-gray-300 shadow-md w-full'
-            } text-center`}>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">{item.name}</h3>
-              <p className="text-base text-gray-600 mb-2">{item.description}</p>
-              {item.images && <img src={item.images} alt={item.name} className="w-full h-[200px] object-cover mb-4 rounded-md" />}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="w-full max-w-6xl mb-8">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Ethnic Groups</h2>
-        <div className={`w-full ${view === 'grid' ? 'grid grid-cols-4 gap-8' : 'space-y-8'}`}>
-          {filteredEthnicGroupsData.map((item, index) => (
-            <div key={index} className={`${
-              view === 'grid' ? 'bg-white p-6 rounded-lg border border-black shadow-lg' : 'bg-white p-6 rounded-lg border border-gray-300 shadow-md w-full'
-            } text-center`}>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">{item.name}</h3>
-              <p className="text-base text-gray-600 mb-2">{item.description}</p>
-              {item.images && <img src={item.images} alt={item.name} className="w-full h-[200px] object-cover mb-4 rounded-md" />}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="w-full max-w-6xl mb-8">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Provinces</h2>
-        <div className={`w-full ${view === 'grid' ? 'grid grid-cols-4 gap-8' : 'space-y-8'}`}>
-          {filteredProvincesData.map((item, index) => (
-            <div key={index} className={`${
-              view === 'grid' ? 'bg-white p-6 rounded-lg border border-black shadow-lg' : 'bg-white p-6 rounded-lg border border-gray-300 shadow-md w-full'
-            } text-center`}>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">{item.name}</h3>
-              <p className="text-base text-gray-600 mb-2">{item.description}</p>
-              {item.images && <img src={item.images} alt={item.name} className="w-full h-[200px] object-cover mb-4 rounded-md" />}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="w-full max-w-6xl mb-8">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Historical Figures</h2>
-        <div className={`w-full ${view === 'grid' ? 'grid grid-cols-4 gap-8' : 'space-y-8'}`}>
-          {filteredHistoricalFiguresData.map((item, index) => (
-            <div key={index} className={`${
-              view === 'grid' ? 'bg-white p-6 rounded-lg border border-black shadow-lg' : 'bg-white p-6 rounded-lg border border-gray-300 shadow-md w-full'
-            } text-center`}>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">{item.name}</h3>
-              <p className="text-base text-gray-600 mb-2">{item.description}</p>
-              {item.images && <img src={item.images} alt={item.name} className="w-full h-[200px] object-cover mb-4 rounded-md" />}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="w-full max-w-6xl mb-8">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Tourist Attractions</h2>
-        <div className={`w-full ${view === 'grid' ? 'grid grid-cols-4 gap-8' : 'space-y-8'}`}>
-          {filteredTouristAttractionsData.map((item, index) => (
-            <div key={index} className={`${
-              view === 'grid' ? 'bg-white p-6 rounded-lg border border-black shadow-lg' : 'bg-white p-6 rounded-lg border border-gray-300 shadow-md w-full'
-            } text-center`}>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">{item.name}</h3>
-              <p className="text-base text-gray-600 mb-2">{item.description}</p>
-              {item.images && <img src={item.images} alt={item.name} className="w-full h-[200px] object-cover mb-4 rounded-md" />}
-            </div>
-          ))}
-        </div>
-      </div>
+      ))}
     </div>
   );
 }
