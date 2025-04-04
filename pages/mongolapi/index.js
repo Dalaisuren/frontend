@@ -44,7 +44,7 @@ export default function MongolAPI() {
         setHistoricalFiguresData(historicalFiguresResult.historical_figures || []);
         setTouristAttractionsData(touristAttractionsResult.tourist_attractions || []);
 
-        console.log("Instruments Data:", instrumentsData); // Added this line!
+        console.log("Instruments Data:", instrumentsData);
       } catch (error) {
         console.error(error);
       }
